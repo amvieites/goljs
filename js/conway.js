@@ -72,12 +72,8 @@ function delayRemove(this1) {
 
 Game.prototype.nextStage = function() {
 	this.generation++;
-	var time = window.performance.now();
 	this.livingCells = this.evolutionStrategy.nextGeneration(this.board);
-	console.log("Algorithm: " + (window.performance.now() - time));
-	time = window.performance.now();
 	this.colonyViewer.paintEcosystem(this.board, this.gameProperties.pattern.name, this.generation, this.livingCells);
-	console.log("Painting: " + (window.performance.now() - time));
 
 	if (this.evolutionStrategy.currentCells <= 0) {
 		window.clearInterval(this.loop);
