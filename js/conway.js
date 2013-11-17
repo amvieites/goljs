@@ -1,3 +1,9 @@
+/***********************************************************************/
+//
+// Dumb Game of Life implementation v0.1
+//
+/***********************************************************************/
+
 /************************/
 /* Game logic functions */
 /************************/
@@ -29,6 +35,9 @@ function Game(gameProperties) {
 	if (!gameProperties.squareColour) {
 		gameProperties.squareColour = "#000";
 	}
+	if (!gameProperties.spawnTimeMs) {
+		gameProperties.spawnTimeMs = 750;
+	}
 	this.gameProperties = gameProperties;
 
 	this.normalizeMeasures();
@@ -58,7 +67,7 @@ Game.prototype.newGame = function() {
 function delayRemove(this1) {
   return window.setInterval(function(_this) {
       _this.nextStage();
-    }, 100, this1);
+    }, this1.gameProperties.spawnTimeMs, this1);
 }
 
 Game.prototype.nextStage = function() {
