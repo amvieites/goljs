@@ -1,12 +1,17 @@
-/***********************************************************************/
-//
-// Dumb Game of Life implementation v0.1
-//
-/***********************************************************************/
-
 /************************/
 /* Game logic functions */
 /************************/
+
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       || 
+          window.webkitRequestAnimationFrame || 
+          window.mozRequestAnimationFrame    || 
+          window.oRequestAnimationFrame      || 
+          window.msRequestAnimationFrame     || 
+          function(/* function */ callback, /* DOMElement */ element){
+            window.setTimeout(callback, 1000 / FPS);
+          };
+})();
 
 function Game(gameProperties) {
 	var divObject = document.getElementById(gameProperties.divId);
@@ -35,9 +40,6 @@ function Game(gameProperties) {
 	if (!gameProperties.squareColour) {
 		gameProperties.squareColour = "#000";
 	}
-	if (!gameProperties.spawnTimeMs) {
-		gameProperties.spawnTimeMs = 750;
-	}
 	this.gameProperties = gameProperties;
 
 	this.normalizeMeasures();
@@ -55,19 +57,12 @@ function Game(gameProperties) {
 }
 
 Game.prototype.newGame = function() {
-	this.playing = true;
 	this.generation = 0;
 	this.livingCells
 	this.colonyViewer.initializeCanvas();
 	this.colonyViewer.paintEcosystem(this.evolutionStrategy.board, this.gameProperties.squareColour);
 	
-	this.loop = delayRemove(this);
-}
-
-function delayRemove(this1) {
-  return window.setInterval(function(_this) {
-      _this.nextStage();
-    }, this1.gameProperties.spawnTimeMs, this1);
+	this.loop = this.delayRemove();
 }
 
 Game.prototype.nextStage = function() {
@@ -78,6 +73,11 @@ Game.prototype.nextStage = function() {
 	if (this.evolutionStrategy.currentCells <= 0) {
 		window.clearInterval(this.loop);
 	}
+}
+
+Game.prototype.delayRemove = function() {
+	this.nextStage();
+  requestAnimFrame(this.delayRemove.bind(this));
 }
 
 Game.prototype.normalizeMeasures = function() {
@@ -132,6 +132,14 @@ EvolutionStrategy.prototype.survives = function(neighbours) {
 	return neighbours < 4 && neighbours > 1;
 }
 
+EvolutionStrategy.prototype.isolated = function(neighbours) {
+	return neighbours < 2;
+}
+
+EvolutionStrategy.prototype.overcrowded = function (neighbours) {
+	return neighbours > 3;
+}
+
 EvolutionStrategy.prototype.countNeighbours = function(x, y) {
 	var neighbours = 0;
 	if (x>0 && y > 0 && this.board[x-1][y-1]) neighbours++;
@@ -147,6 +155,14 @@ EvolutionStrategy.prototype.countNeighbours = function(x, y) {
 	if (y < this.board[0].length-1 && this.board[x][y+1]) neighbours++;
 	
 	return neighbours;
+}
+
+EvolutionStrategy.prototype.swap = function(i) {
+	if (this.board[i[0]][i[1]]) {
+		this.board[i[0]][i[1]] = undefined;
+	} else {
+		this.board[i[0]][i[1]] = true;
+	}
 }
 
 function Cell(x, y) {

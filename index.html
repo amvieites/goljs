@@ -1,0 +1,29 @@
+<html>
+<head>
+    <title>.alejandromartinez.me</title>
+    <link rel="stylesheet" type="text/css" href="css/picnic.css">
+    <link rel="stylesheet" type="text/css" href="css/fontello.css">
+</head>
+<body style="margin: 0px">
+    <div id="life" style="position: absolute; top: 0; left: 50%; height:400px; width:800px; margin:0 0 0 -400px;"></div>
+    <script type="text/javascript" src="js/conway.js"></script>
+    <script type="text/javascript">
+        initVars = {
+            "divId" : "life",
+            "width" : 800,
+            "height" : 400,
+            "squareSide" : 5,
+            "linesColour" : "#000",
+            "backgroundColour" : "#fff",
+            "linesWidth" : .13,
+            "squareColour" : "#aaf",
+            "pattern" : {
+                "name": "acorn",
+                "cells": [[70, 35],[72,36],[69,37],[70,37],[73,37],[74,37],[75,37]]
+            }
+        }
+
+        var game1 = new Game(initVars);
+    </script>
+</body>
+</html>
